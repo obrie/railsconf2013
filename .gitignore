@@ -1,0 +1,11 @@
+.DS_Store
+.rvmrc
+batsd/tmp
+testapp/.bundle
+testapp/db/*.sqlite3
+testapp/log/*.log
+testapp/tmp/*
+vendor/sensu-admin/.bundle
+vendor/sensu-admin/db/*.sqlite3
+vendor/sensu-admin/log/*.log
+vendor/sensu-admin/tmp/*

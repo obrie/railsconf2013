@@ -1,0 +1,39 @@
+- @clients.each do |client|
+  %div{:class => "modal hide", :id => "client_modal_#{client.name}"}
+    %div.modal-header
+      %h3== Client: #{client.name}
+    %div.modal-body
+      %table.table.table-striped.table-bordered
+        %tbody
+          - client.attributes.each do |k,v|
+            %tr
+              %td= k
+              %td= v
+
+%table.table-striped.dataTable.clients_table.table{:id => "clients_table"}
+  %thead
+    - if use_environments?
+      %th ENV
+    %th Name
+    %th Address
+    %th Subscriptions
+    %th Last checkin
+    %th
+    %th
+      
+  %tbody
+    - @clients.each do |client|
+      %tr{:id => "client_row_#{client.name}", :rel => "#client_modal_#{client.name}"}
+        - if use_environments?
+          %td.moreinfo= client.environment
+        %td.moreinfo= client.name
+        %td.moreinfo= client.address
+        %td.subpopover{'data-content' => client.subscriptions.join(', ')}
+          = format_subscriptions(client.subscriptions)
+          %i.icon-chevron-right
+        %td.moreinfo= client.role
+        %td.moreinfo= time_ago_in_words(Time.at(client.timestamp))
+        %td.moreinfo
+          %i.icon-zoom-in
+        %td
+          %a.delete-client{:key => client.name, :rel => "/clients/#{client.name}"} Delete

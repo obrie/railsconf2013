@@ -1,0 +1,13 @@
+source :rubygems
+
+# Sensu
+gem 'sensu', '~> 0.9.12'
+gem 'sensu-plugin', '~> 0.1.7'
+
+# Check dependencies
+gem 'batsd', '~> 1.0.1'
+gem 'memcached', '~> 1.5.0'
+
+# Handler dependencies
+gem 'redphone', '~> 0.0.6'
+gem 'statsd-ruby', '~> 1.0.0'

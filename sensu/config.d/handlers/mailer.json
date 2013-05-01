@@ -1,0 +1,6 @@
+{
+  "mailer": {
+    "mail_from": "Admin <admin@localhost>",
+    "mail_to": "NOC <noc@localhost>"
+  }
+}

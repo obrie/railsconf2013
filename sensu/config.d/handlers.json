@@ -1,0 +1,18 @@
+{
+  "handlers": {
+    "statsd": {
+      "type": "pipe",
+      "command": "sensu/handlers/statsd_push.rb",
+      "severities": ["ok"]
+    },
+    "pagerduty": {
+      "type": "pipe",
+      "command": "sensu/handlers/pagerduty.rb",
+      "severities": ["critical"]
+    },
+    "mailer": {
+      "type": "pipe",
+      "command": "vendor/senus-community-plugins/handlers/notification/mailer.rb"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    amq-client (0.9.12)
+      amq-protocol (>= 1.2.0)
+      eventmachine
+    amq-protocol (1.2.0)
+    amqp (0.9.10)
+      amq-client (~> 0.9.12)
+      amq-protocol (~> 1.2.0)
+      eventmachine
+    async_sinatra (1.0.0)
+      rack (>= 1.4.1)
+      sinatra (>= 1.3.2)
+    batsd (1.0.1)
+    daemons (1.1.9)
+    em-redis-unified (0.4.1)
+      eventmachine (>= 0.12.10)
+    eventmachine (1.0.3)
+    json (1.7.7)
+    memcached (1.5.0)
+    mixlib-cli (1.3.0)
+    oj (2.0.9)
+    rack (1.5.2)
+    rack-protection (1.5.0)
+      rack
+    redphone (0.0.6)
+      json
+    sensu (0.9.12)
+      amqp (= 0.9.10)
+      async_sinatra (= 1.0.0)
+      em-redis-unified (= 0.4.1)
+      eventmachine (= 1.0.3)
+      oj (= 2.0.9)
+      sinatra (= 1.3.5)
+      thin (= 1.5.0)
+    sensu-plugin (0.1.7)
+      json
+      mixlib-cli (>= 1.1.0)
+    sinatra (1.3.5)
+      rack (~> 1.4)
+      rack-protection (~> 1.3)
+      tilt (~> 1.3, >= 1.3.3)
+    statsd-ruby (1.0.0)
+    thin (1.5.0)
+      daemons (>= 1.0.9)
+      eventmachine (>= 0.12.6)
+      rack (>= 1.0.0)
+    tilt (1.3.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  batsd (~> 1.0.1)
+  memcached (~> 1.5.0)
+  redphone (~> 0.0.6)
+  sensu (~> 0.9.12)
+  sensu-plugin (~> 0.1.7)
+  statsd-ruby (~> 1.0.0)

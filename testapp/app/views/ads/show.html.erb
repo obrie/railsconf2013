@@ -1,0 +1,7 @@
+<p>
+Showing ad <%= params[:id] %>...
+</p>
+
+<p>
+  <%= link_to 'Create conversion', ad_conversions_url(:ad_id => params[:id]), :method => :post %>
+</p>

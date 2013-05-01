@@ -1,0 +1,25 @@
+{
+  "rabbitmq": {
+    "host": "localhost",
+    "port": 5672,
+    "user": "guest",
+    "password": "guest",
+    "vhost": "/"
+  },
+  "redis": {
+    "host": "localhost",
+    "port": 6379
+  },
+  "api": {
+    "host": "localhost",
+    "port": 4567
+  },
+  "dashboard": {
+    "hostname": "localhost"
+  },
+  "client": {
+    "name": "localhost",
+    "address": "127.0.0.1",
+    "subscriptions": ["db", "memcached", "sensu_server"]
+  }
+}

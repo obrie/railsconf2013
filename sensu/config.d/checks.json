@@ -1,0 +1,46 @@
+{
+  "checks": {
+    // System metrics
+    "db_load": {
+      "command": "sensu/checks/check_load_15.rb -w 0.9 -c 1.0",
+      "subscribers": ["db"],
+      "interval": 60,
+      "occurrences": 10,
+      "handlers": ["mailer", "pagerduty"],
+      "refresh": 3600
+    },
+    "memcached_stats": {
+      "command": "sensu/checks/memcached_stats.rb",
+      "subscribers": ["memcached"],
+      "interval": 60,
+      "handlers": ["statsd"],
+      "type": "metric"
+    },
+
+    // Business metrics
+    "revenue": {
+      "command": "sensu/checks/check_revenue.rb -w 100 -c 0",
+      "subscribers": ["sensu_server"],
+      "interval": 3600,
+      "occurrences": 1,
+      "handlers": ["mailer"],
+      "refresh": 86400
+    },
+    "revenue-rate": {
+      "command": "sensu/checks/check_revenue_rate.rb -w 25 -c 50",
+      "subscribers": ["sensu_server"],
+      "interval": 3600,
+      "occurrences": 1,
+      "handlers": ["mailer"],
+      "refresh": 86400
+    },
+    "revenue-trend": {
+      "command": "sensu/checks/check_revenue_trend.rb",
+      "subscribers": ["sensu_server"],
+      "interval": 3600,
+      "occurrences": 1,
+      "handlers": ["mailer"],
+      "refresh": 86400
+    }
+  }
+}

@@ -1,0 +1,158 @@
+%br
+%br
+%div
+  %a.btn.btn-primary.pull-right{:href => "/downtimes/new"} Create Downtime
+  %div.pull-left{:id => "api_time_div"}
+%br
+%br
+
+%h2 Active downtimes
+%br
+- (@active_downtime + @future_downtime).each do |downtime|
+  %div{:class => "modal hide", :id => "downtime_modal_#{downtime.id}"}
+    %div.modal-header
+      %h3== Downtime: #{downtime.name}
+    %div.modal-body
+      - if downtime.start_time < (Time.now - 10.minutes) && !downtime.processed? && !downtime.completed?
+        %div.alert.alert-error
+          %p 
+            Note: This downtime should be in an active (or past) state but was never processed nor completed, 
+            Please check your cronjob and or logs. Please read the README.rdoc to see how to configure whenever to setup your cronjobs.
+      %table.table.table-striped.table-bordered
+        %tbody
+          %tr
+            %td Name
+            %td= downtime.name
+          %tr
+            %td Description
+            %td= downtime.description
+          %tr
+            %td Start time
+            - if Time.at(downtime.start_time) > Time.now
+              %td== #{downtime.start_time} -- in about #{distance_of_time_in_words(Time.now, downtime.start_time)}
+            - else
+              %td== #{downtime.start_time} -- #{time_ago_in_words(downtime.start_time)} ago
+          %tr
+            %td Stop time
+            - if Time.at(downtime.stop_time) > Time.now
+              %td== #{downtime.stop_time} -- in about #{distance_of_time_in_words(Time.now, downtime.stop_time)}
+            - else
+              %td== #{downtime.stop_time} -- #{time_ago_in_words(downtime.stop_time)} ago
+          %tr
+            %td User
+            %td= downtime.user.email
+          %tr
+            %td Processed
+            %td= downtime.processed?
+          %tr
+            %td Completed
+            %td= downtime.completed?
+          %tr
+            %td Created At
+            %td= downtime.created_at
+          %tr
+            %td Updated at
+            %td= downtime.updated_at
+      %br
+      %h3 Clients (#{downtime.downtime_clients.count})
+      %table.table.table-striped.table-bordered
+        %thead
+          %th Name
+          %th Address
+          %th ENV
+        %tbody
+          - downtime.downtime_clients.each do |dclient|
+            %tr
+              - if @clients_hash[dclient.name].nil?
+                %td= dclient.name
+                %td Unknown
+                %td Unknown
+              - else
+                %td= dclient.name
+                %td= @clients_hash[dclient.name][:address]
+                - if use_environments?
+                  %td= @clients_hash[dclient.name][:environment]
+      - unless downtime.downtime_checks.empty?
+        %h3 Checks (#{downtime.downtime_checks.count})
+        %table.table.table-striped.table-bordered
+          %tbody
+            - downtime.downtime_checks.each do |check|
+              %tr
+                %td= check.name
+    %div.modal-footer
+      - if downtime.active?
+        %div.btn.btn-danger
+          = link_to 'Complete', {:controller => "downtimes", :action => "force_complete", :downtime_id => "#{downtime.id}"}, {:data => {:confirm => "Are you sure?"}, :method => :post, :style=>'color:#FFFFFF;'}
+      - else
+        = link_to edit_downtime_path(downtime), {:style => 'color:#FFFFFF;'} do
+          %div.btn.btn-info
+            Edit
+        = link_to downtime_path(downtime), {:data => {:confirm => "Are you sure?"}, :style=>'color:#FFFFFF;', :method => :delete} do
+          %div.btn.btn-danger
+            Delete
+
+%table.table.table-striped.table-bordered
+  %thead
+    %th Name
+    %th Description
+    %th Start Time
+    %th Stop Time
+    %th User
+    %th Clients
+    %th Checks
+    %th Created At
+    %th
+    %th
+  %tbody
+    - @active_downtime.each do |adowntime|
+      %tr{:rel => "#downtime_modal_#{adowntime.id}"}
+        %td.moreinfo= adowntime.name
+        %td.moreinfo= adowntime.description
+        %td.moreinfo= adowntime.start_time
+        %td.moreinfo= adowntime.stop_time
+        %td.moreinfo= adowntime.user.email
+        %td.moreinfo= adowntime.downtime_clients.count
+        %td.moreinfo= adowntime.downtime_checks.count
+        %td.moreinfo= time_ago_in_words(adowntime.created_at) + " ago"
+        %td.moreinfo
+          %i.icon-zoom-in
+        %td= link_to 'Complete', {:controller => "downtimes", :action => "force_complete", :downtime_id => "#{adowntime.id}"}, :data => {:confirm => "Are you sure?"}, :method => :post
+%br
+%br
+%h2 Scheduled downtimes
+%br
+
+%table.table.table-bordered
+  %thead
+    %th Name
+    %th Description
+    %th Start Time
+    %th Stop Time
+    %th User
+    %th Clients
+    %th Checks
+    %th Created At
+    %th
+    %th
+    %th
+  %tbody
+    - @future_downtime.each do |adowntime|
+      - tr_style = (adowntime.start_time < (Time.now - 10.minutes)) ? "background-color: #FF8282;" : ""
+      %tr{:style => tr_style, :rel => "#downtime_modal_#{adowntime.id}"}
+        %td.moreinfo= adowntime.name
+        %td.moreinfo= adowntime.description
+        %td.moreinfo= adowntime.start_time
+        %td.moreinfo= adowntime.stop_time
+        %td.moreinfo= adowntime.user.email
+        %td.moreinfo= adowntime.downtime_clients.count
+        %td.moreinfo= adowntime.downtime_checks.count
+        %td.moreinfo= time_ago_in_words(adowntime.created_at) + " ago"
+        %td.moreinfo
+          %i.icon-zoom-in
+        %td= link_to 'Edit', edit_downtime_path(adowntime)
+        %td= link_to 'Delete', downtime_path(adowntime), :data => {:confirm => "Are you sure?"}, :method => :delete
+%br
+%br
+%div
+  %center
+    %a.btn.btn-inverse{:href => "/downtimes/old_downtimes"} Past Downtimes

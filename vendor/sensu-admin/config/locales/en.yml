@@ -1,0 +1,21 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  datetime:
+    distance_in_words:
+        less_than_x_minutes:
+          one: <1min
+        x_minutes:
+          one: 1min
+          other: "%{count}mins"
+        about_x_hours:
+          one: 1hr
+          other: "%{count}hrs"
+        x_days:
+          one: 1day
+          other: "%{count}days"
+        x_months:
+          one: 1month
+          other: "%{count}month(s)"
+        

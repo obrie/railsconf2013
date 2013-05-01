@@ -1,0 +1,42 @@
+== Sensu Admin
+
+Sensu-admin is a web application to interface with the sensu-api, it displays
+events and clients and can silence events etc.
+
+== Getting Started
+
+rake db:migrate
+rake db:seed
+
+Make sure your post-deploy task runs "whenever --update-crontab from the rails cwd"
+
+The seed file creates a user account named admin@example.com with a password of secret.
+
+== Database
+
+sensu-admin uses the database very lightly, so you can use sqlite instead of mysql. bundling --without mysql will not require the mysql libraries.
+The User, Downtime and Log models are all that use the database currently so unless you have very high throughput it should result in little usage.
+
+== TODO
+
+=== High Priority
+* Fix cookbook for deployment
+* Settings displaying environments, api settings
+* Silence events en mass
+
+=== Medium Priority
+* Lazy load events, clients, etc in mobile
+* Silence all
+* Use sensu config for production sensu-admin -- https://github.com/sensu/sensu/blob/master/lib/sensu/settings.rb
+* Do not render out all modals into the html, do like you do with the main modal on events and render via ajax
+* Make sure that downtimes and silence events have pre defined descriptions that you can set (dropdown)
+* Fix bug where if a check output has no spaces it can blow out the list (because it will not wrap)
+* Add keepalive into downtime checks
+
+=== Low Priority
+* Make a downtime info page
+* Log Downtime schedule, execution, and completion
+* Silence based on an attribute (es, rs)
+* Make the JQuery mobile version auto-update events if possible
+* Move mobile and desktop assets into their own directories and cleanup
+* Notify the user if whenever cronjobs have not run recently, namely when scheduling a downtime.

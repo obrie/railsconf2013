@@ -1,0 +1,27 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    batsd-dash (0.5.0)
+      connection_pool
+      haml
+      sinatra
+    connection_pool (1.0.0)
+    haml (4.0.2)
+      tilt
+    puma (2.0.1)
+      rack (>= 1.1, < 2.0)
+    rack (1.5.2)
+    rack-protection (1.5.0)
+      rack
+    sinatra (1.4.2)
+      rack (~> 1.5, >= 1.5.2)
+      rack-protection (~> 1.4)
+      tilt (~> 1.3, >= 1.3.4)
+    tilt (1.3.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  batsd-dash
+  puma

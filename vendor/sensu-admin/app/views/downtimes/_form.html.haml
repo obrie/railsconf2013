@@ -1,0 +1,99 @@
+
+- unless @downtime.errors.empty?
+  %div.alert.alert-block
+    %h3== #{pluralize(@downtime.errors.count, "error")} prohibited this post from being saved
+    %ul
+      - @downtime.errors.full_messages.each do |msg|
+        %li
+          %p= msg
+%p Note: Your event handler must use sensu-plugin or hit the API to make use of silencing(downtimes).
+%div.form
+  = semantic_form_for @downtime  do |f|
+    = f.inputs do
+      %br
+      %div
+        %p Name
+        %input.input-xlarge{:type => "text", :name => 'downtime[name]', :value => @downtime.name}
+      %div
+        %br
+        %p Description
+        %textarea.input-xlarge{:type => "text", :rows => "3", :name => 'downtime[description]', :value => @downtime.description}
+        %br
+      %div.datepair
+        %br
+        %br
+        %h2 Schedule downtime time range
+        %br
+        %p 
+          Note: Time input in server time (UTC).
+          %div.pull-left{:id => "api_time_div"}
+        %br
+        %h3 From:
+        %input.date_input.start.date{:id => "downtime_start_date", :name => 'downtime[begin_date]', :value => @downtime.begin_date}
+        %input.time_input.start.time{:name => 'downtime[begin_time]', :value => @downtime.begin_time}
+        %h3 To:
+        %input.date_input.end.date{:id => "downtime_end_date", :name => 'downtime[end_date]', :value => @downtime.end_date}
+        %input.time_input.end.time{:name => 'downtime[end_time]', :value => @downtime.end_time}
+      %br
+      %br
+      %h3 Clients
+      %br
+      %div
+        %div.pull-left
+          Search:
+          %input{:id => "downtime_client_search", :type => "text"}
+        %div.pull-right
+          %input.pull-right{:id => "select_all_clients", :type => "checkbox"} Select All 
+      %table.table.table-striped{:id => "downtime_clients_table"}
+        %thead
+          %th Name
+          %th Address
+          - if use_environments?
+            %th ENV
+          %th Subscriptions
+          %th 
+        %tbody
+          - @clients.each do |client|
+            - client_checked = !@downtime.downtime_clients.find_by_name(client.name).nil?
+            %tr{:rel => "downtime_client_table_row", :misc => "#{client.name}"}
+              %td.toggle_box= client.name
+              %td.toggle_box= client.address
+              - if use_environments?
+                %td.toggle_box= client.environment
+              %td.toggle_box= client.subscriptions.join(',')[0..100]
+              %td.check_box{:filter => "false"}
+                - if client_checked
+                  %input{:name => 'downtime[client_ids][]', :value => "#{client.name}", :type => "checkbox", :checked => "true"}
+                -else
+                  %input{:name => 'downtime[client_ids][]', :value => "#{client.name}", :type => "checkbox"}
+      %br
+      %br
+      %h3 Checks 
+      %p Note: If you want every check on the client silenced, then do not pick any checks below. Selecting checks below means you want only said checks on the clients silenced. This can create ALOT of stashes (client * check count).
+      %br
+      %div
+        %div.pull-left
+          Search:
+          %input{:id => "downtime_check_search", :type => "text"}
+        %div.pull-right
+          %input.pull-right{:id => "select_all_checks", :type => "checkbox"} Select All 
+      %br
+      %table.table.table-striped{:id => "downtime_checks_table"}
+        %thead
+          %th Name
+          %th Description
+          %th 
+        %tbody
+          %input{:name => 'downtime[check_ids][]', :value => "", :type => "hidden"}
+          - @checks.each do |check|
+            - check_checked = !@downtime.downtime_checks.find_by_name(check.name).nil?
+            %tr{:rel => "downtime_check_table_row", :misc => "#{check.name}"}
+              %td.toggle_box= check.name
+              %td.toggle_box= check.description
+              %td.check_box{:filter => "false"}
+                - if check_checked
+                  %input{:name => 'downtime[check_ids][]', :value => "#{check.name}", :type => "checkbox", :checked => "true"}
+                - else
+                  %input{:name => 'downtime[check_ids][]', :value => "#{check.name}", :type => "checkbox"}
+      %div{:style => "margin-left: 40%;"}
+        = f.action :submit, :as => :button, :button_html => {:class => "btn btn-info"}

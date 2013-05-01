@@ -1,0 +1,13 @@
+:css
+  .modal {
+    width: 80%;
+    height: 30%;
+    left: 8%;
+    top: 15%;
+  }
+
+
+- if configure_server?
+  = render :partial => "configure_server"
+- else
+  = render :partial => "checks"

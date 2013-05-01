@@ -1,0 +1,10 @@
+#!/bin/sh
+BASEPATH=`cd "$( dirname "$0" )/.." && pwd`
+
+: ${SENSU_CONFIG_FILE:=$BASEPATH/config.json}
+: ${SENSU_CONFIG_DIR:=$BASEPATH/config.d}
+
+export SENSU_CONFIG_FILE
+export SENSU_CONFIG_DIR
+
+exec bundle exec $@ -d $SENSU_CONFIG_DIR -c $SENSU_CONFIG_FILE

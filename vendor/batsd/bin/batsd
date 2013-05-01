@@ -1,0 +1,99 @@
+#!/usr/bin/env ruby 
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
+require 'rubygems'
+require 'bundler/setup'
+require 'yaml'
+require 'optparse'
+require 'batsd'
+ENV["VERBOSE"]="1" if ENV["VVERBOSE"]
+begin
+  ORIGINAL_ARGV = ARGV.dup
+  options = { config: "config.yml" }
+  
+  parser = OptionParser.new do |opts|
+    opts.banner = "Usage: batsd [options] (*server|truncate|receiver|stats|datapoints) args"
+
+    opts.separator ""
+    opts.separator "options:"
+
+    opts.on("-cCONFIG", "--config-file CONFIG", "Configuration file") do |x|
+     options[:config] = x 
+    end
+
+    opts.on("-pPORT", "--port PORT", "Port") do |x|
+      options[:manual_port] = x.to_i
+    end
+
+    opts.on("-v", "--version", "Print the version") do
+      puts "batsd version #{Batsd::VERSION}"
+      exit
+    end
+    
+    opts.on("-h", "--help", "Show this message") do
+      puts opts
+      exit
+    end
+  end
+  parser.parse!
+  unless File.exists? options[:config]
+    puts parser.help
+    exit
+  end
+  config = YAML.load_file(options[:config]).inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}.merge(options)
+  
+  command = (ARGV[0] || :receiver).downcase.to_sym
+  case command
+  when :truncate
+    truncator = Batsd::Truncator.new(config)
+    if ARGV[1].to_i.to_s == ARGV[1]
+      truncator.run(ARGV[1].to_i)
+    else
+      puts "Need to specify a truncation level (#{config[:retentions].keys.join(",")} are configured)."
+      exit 1
+    end
+  when :stats
+    require 'socket'
+    TCPSocket.new('localhost', (config[:port] || 8125).to_i + 1).tap do |socket|
+      socket.puts "stats\n"
+      puts socket.gets
+    end
+  when :server
+    Batsd::Server::Daemon.new(config).run
+  when :receiver
+    # Define the handlers that will handle each data type
+    # The key that they are assigned to should correspond to
+    # the data type appended to the message (e.g., since
+    # counters append |c, the counters handler is at handlers[:c])
+    handlers = { c: Batsd::Handler::Counter.new(config), 
+                 g: Batsd::Handler::Gauge.new(config), 
+                 ms: Batsd::Handler::Timer.new(config)
+               }
+    Batsd::Receiver::Daemon.new(handlers, config).run
+  when :datapoints
+    # List all available datapoints
+    Batsd::Redis.new(config).datapoints.each do |d|
+      puts d.match(/^timers:/) ? "#{d}:(mean|count|min|max|upper_90|stddev)" : d
+    end
+  when :delete
+    statistic = ARGV[1]
+    if statistic && !statistic.empty?
+      deletions = Batsd::Deleter.new(config).delete(statistic)
+      puts "Deleted #{deletions.join(",")}." 
+    else
+      puts "Need to specify a statistic."
+      exit 1
+    end
+  else
+    puts "I don't know how to #{command}."
+    exit 1
+  end
+
+rescue Exception => e
+  if e.instance_of?(SystemExit)
+    raise
+  else
+    puts 'Uncaught exception'
+    puts e.message
+    puts e.backtrace.join("\n")
+  end
+end
