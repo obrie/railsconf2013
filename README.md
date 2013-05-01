@@ -2,6 +2,8 @@
 
 This will get you set up with Sensu (including the Admin), BatsD, and a sample Rails app instrumenting business metrics.
 
+Presentation: https://docs.google.com/presentation/d/1yPASvOdFbFmU6bcwsIEYjN0Yub04ZsUrE-UyHPd72QM/edit?usp=sharing
+
 ## Organization
 
 ### BatsD
