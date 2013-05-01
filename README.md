@@ -24,19 +24,19 @@ This will get you set up with Sensu (including the Admin), BatsD, and a sample R
 
 All of these commands should be run from the root directory of this project.
 
-1. Install Redis on localhost:6379
+1\. Install Redis on localhost:6379
 
 ```
 sudo apt-get install redis-server
 ```
 
-2. Install RabbitMQ on localhost:5672 with guest/guest auth
+2\. Install RabbitMQ on localhost:5672 with guest/guest auth
 
 ```
 sudo apt-get install rabbitmq-server
 ```
 
-3. Install gems for BatsD, Sensu, Sensu Admin, your Rails app, and this project
+3\. Install gems for BatsD, Sensu, Sensu Admin, your Rails app, and this project
 
 ```
 gem install bundler
@@ -48,7 +48,7 @@ bundle install --gemfile=testapp/Gemfile
 bundle install
 ```
 
-4. Set up Sensu Admin app:
+4\. Set up Sensu Admin app:
 
 ```
 BUNDLE_GEMFILE=vendor/sensu-admin/Gemfile bundle exec rake db:create --rakefile vendor/sensu-admin/Rakefile
@@ -56,18 +56,18 @@ BUNDLE_GEMFILE=vendor/sensu-admin/Gemfile bundle exec rake db:migrate --rakefile
 BUNDLE_GEMFILE=vendor/sensu-admin/Gemfile bundle exec rake db:seed --rakefile vendor/sensu-admin/Rakefile
 ```
 
-5. Set up Test Rails App:
+5\. Set up Test Rails App:
 
 ```
 BUNDLE_GEMFILE=testapp/Gemfile bundle exec rake db:create --rakefile testapp/Rakefile
 BUNDLE_GEMFILE=testapp/Gemfile bundle exec rake db:migrate --rakefile testapp/Rakefile
 ```
 
-6. Fill in auth details for PagerDuty
+6\. Fill in auth details for PagerDuty
 
 See sensu/config.d/handlers/pagerduty.json
 
-7. Fire everything up!
+7\. Fire everything up!
 
 ```
 bundle exec foreman start
