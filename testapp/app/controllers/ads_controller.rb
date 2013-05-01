@@ -1,5 +1,5 @@
 class AdsController < ApplicationController
   def show
-    Testapp.statsd.increment('views')
+    Testapp.statsd.increment('ad_views')
   end
 end
