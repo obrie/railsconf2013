@@ -38,10 +38,16 @@ sudo apt-get install redis-server
 sudo apt-get install rabbitmq-server
 ```
 
-3\. Install gems for BatsD, Sensu, Sensu Admin, your Rails app, and this project
+3\. (Ubuntu 10.04) Install memcached libsasl2-dev libmysqlclient-dev libsqlite3-dev
+```
+sudo apt-get install memcached libsasl2-dev libmysqlclient-dev libsqlite3-dev
+```
+
+4\. Install gems for BatsD, Sensu, Sensu Admin, your Rails app, and this project
 
 ```
 gem install bundler
+gem update --system
 bundle install --gemfile=sensu/Gemfile
 bundle install --gemfile=vendor/sensu-admin/Gemfile
 bundle install --gemfile=batsd-dashboard/Gemfile
